@@ -62,7 +62,7 @@ public class AdapterDrops extends RecyclerView.Adapter<AdapterDrops.DropHolder> 
 
         public DropHolder(View itemView) {
             super(itemView);
-            itemView.findViewById(R.id.tv_what);
+            textWhat = (TextView)itemView.findViewById(R.id.tv_what);
         }
     }
 }
