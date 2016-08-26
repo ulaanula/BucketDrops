@@ -47,6 +47,7 @@ public class DialogAdd extends DialogFragment {
         }
     };
 
+    //TODO Process date
     private void addAction() {
 
         String what = mInputWhat.getText().toString();

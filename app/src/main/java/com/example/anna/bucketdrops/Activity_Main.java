@@ -2,17 +2,21 @@ package com.example.anna.bucketdrops;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.example.anna.bucketdrops.adapters.AdapterDrops;
 
 public class Activity_Main extends AppCompatActivity {
 
     Toolbar mToolbar;
     Button mBtnAdd;
+    RecyclerView mRecycler;
 
     private View.OnClickListener mBtnAddListener = new View.OnClickListener(){
 
@@ -27,7 +31,6 @@ public class Activity_Main extends AppCompatActivity {
         dialog.show(getSupportFragmentManager(), "Add");
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +38,11 @@ public class Activity_Main extends AppCompatActivity {
         mToolbar = (Toolbar)findViewById(R.id.toolbar);
         mBtnAdd = (Button)findViewById(R.id.btn_add);
         mBtnAdd.setOnClickListener(mBtnAddListener);
+        mRecycler = (RecyclerView)findViewById(R.id.rv_drops);
+        LinearLayoutManager manager = new LinearLayoutManager(this);
+        mRecycler.setLayoutManager(manager);
+        mRecycler.setAdapter(new AdapterDrops(this));
+
         setSupportActionBar(mToolbar);
         initBackgroundImage();
     }
