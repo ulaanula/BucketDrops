@@ -16,7 +16,6 @@ import android.widget.ImageButton;
 import com.example.anna.bucketdrops.beans.Drop;
 
 import io.realm.Realm;
-import io.realm.RealmConfiguration;
 
 /**
  * Created by Anna on 23.08.2016.
@@ -31,7 +30,7 @@ public class DialogAdd extends DialogFragment {
     public DialogAdd(){
     }
 
-    private View.OnClickListener mBtnClickListener = new View.OnClickListener(){
+    private View.OnClickListener mBtnClickListener =  new View.OnClickListener(){
 
         @Override
         public void onClick(View view) {
@@ -53,9 +52,6 @@ public class DialogAdd extends DialogFragment {
         String what = mInputWhat.getText().toString();
         long now = System.currentTimeMillis();
         Drop drop = new Drop(what, now,0 ,false);
-
-        RealmConfiguration config = new RealmConfiguration.Builder(getActivity()).build();
-        Realm.setDefaultConfiguration(config);
 
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
