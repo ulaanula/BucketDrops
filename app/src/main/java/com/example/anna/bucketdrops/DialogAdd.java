@@ -1,7 +1,6 @@
 package com.example.anna.bucketdrops;
 
 
-
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -14,6 +13,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.example.anna.bucketdrops.beans.Drop;
+
+import java.util.Calendar;
 
 import io.realm.Realm;
 
@@ -50,9 +51,17 @@ public class DialogAdd extends DialogFragment {
     private void addAction() {
 
         String what = mInputWhat.getText().toString();
+        String date = mInputWhen.getDayOfMonth()+"/"+mInputWhen.getMonth()+"/"+mInputWhen.getYear();
         long now = System.currentTimeMillis();
-        Drop drop = new Drop(what, now,0 ,false);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_MONTH, mInputWhen.getDayOfMonth());
+        calendar.set(Calendar.MONTH, mInputWhen.getMonth());
+        calendar.set(Calendar.YEAR, mInputWhen.getYear());
+        calendar.set(Calendar.HOUR,0);
+        calendar.set(Calendar.MINUTE,0);
+        calendar.set(Calendar.SECOND,0);
 
+        Drop drop = new Drop(what, now,calendar.getTimeInMillis() ,false);
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         realm.copyToRealm(drop);

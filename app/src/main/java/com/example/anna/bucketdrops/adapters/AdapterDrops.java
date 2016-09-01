@@ -1,6 +1,8 @@
 package com.example.anna.bucketdrops.adapters;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +13,7 @@ import android.widget.TextView;
 
 import com.example.anna.bucketdrops.R;
 import com.example.anna.bucketdrops.beans.Drop;
+import com.example.anna.bucketdrops.extras.Util;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -27,6 +30,8 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public static final int ITEM=0;
     public static final int FOOTER=1;
     public AddListener mAddListener;
+    public MarkListener mMarkListener;
+
 
 
     public AdapterDrops(Context context, Realm realm, RealmResults<Drop> results){
@@ -35,12 +40,13 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         mRealm = realm;
         update(results);
     }
-    public AdapterDrops(Context context,Realm realm, RealmResults<Drop> results, AddListener listener){
+    public AdapterDrops(Context context,Realm realm, RealmResults<Drop> results, AddListener listener, MarkListener markListener){
 
         mInflator = LayoutInflater.from(context);
         mRealm = realm;
         update(results);
         mAddListener =listener;
+        mMarkListener = markListener;
     }
 
 
@@ -72,7 +78,7 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             return holder;
         }else{
             View view = mInflator.inflate(R.layout.row_drop,parent,false);
-            DropHolder holder = new DropHolder(view);
+            DropHolder holder = new DropHolder(view, mMarkListener);
             return holder;
         }
     }
@@ -84,7 +90,8 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         if(holder instanceof DropHolder){
             Drop drop = mResults.get(position);
             DropHolder dropHolder = (DropHolder) holder;
-            dropHolder.textWhat.setText(drop.getWhat());
+            dropHolder.setWhat(drop.getWhat());
+            dropHolder.setBackground(drop.isCompleted());
         }
     }
 
@@ -94,27 +101,55 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         if(mResults==null || mResults.isEmpty()){
             return 0;
         }else{
-
         // +1 is because of footer
         return mResults.size()+1;}
     }
 
+    public static class DropHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        TextView mTextWhat;
+        TextView mTextWhen;
+        MarkListener mMarkListener;
+        Context mContext;
 
 
-    public static class DropHolder extends RecyclerView.ViewHolder{
-
-        TextView textWhat;
-
-        public DropHolder(View itemView) {
+        public DropHolder(View itemView, MarkListener markListener) {
             super(itemView);
-            textWhat = (TextView)itemView.findViewById(R.id.tv_what);
+            itemView.setOnClickListener(this);
+            mContext = itemView.getContext();
+            mTextWhat = (TextView)itemView.findViewById(R.id.tv_what);
+            mTextWhen = (TextView)itemView.findViewById(R.id.tv_when);
+            mMarkListener = markListener;
+        }
+
+        @Override
+        public void onClick(View view) {
+            mMarkListener.onMark(getAdapterPosition());
+        }
+
+        public void setWhat(String what) {
+
+            mTextWhat.setText(what);
+        }
+
+        public void setBackground(boolean completed) {
+
+            Drawable drawable;
+            if(completed){
+                drawable =ContextCompat.getDrawable(mContext,R.color.bg_drop_row_light);
+            }else{
+                drawable =ContextCompat.getDrawable(mContext,R.color.bg_drop_row_dark);
+            }
+
+            Util.setBackground(itemView,drawable);
+
         }
     }
 
     public static class FooterHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         Button btnAdd;
-        AddListener mListener;
+        AddListener mAddListener;
 
         public FooterHolder(View itemView) {
             super(itemView);
@@ -126,14 +161,15 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             super(itemView);
             btnAdd = (Button) itemView.findViewById(R.id.btn_footer);
             btnAdd.setOnClickListener(this);
-            mListener =listener;
+            mAddListener =listener;
         }
 
         @Override
         public void onClick(View view) {
-            mListener.add();
+            mAddListener.add();
         }
     }
+
 
     @Override
     public void onSwipe(int position) {
@@ -143,6 +179,15 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             mResults.get(position).deleteFromRealm();
             mRealm.commitTransaction();
             notifyItemRemoved(position);
+        }
+    }
+
+    public void markComplete(int position) {
+        if(position<mResults.size()) {
+            mRealm.beginTransaction();
+            mResults.get(position).setCompleted(true);
+            mRealm.commitTransaction();
+            notifyItemChanged(position);
         }
     }
 }

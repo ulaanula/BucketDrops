@@ -3,4 +3,8 @@
     <string name="str_add_drop">Add a Drop</string>
     <string name="hint_et_drop">What is it?</string>
     <string name="str_add_it">Add a Drop</string>
+    <string name="action_least_time_left">Least time left</string>
+    <string name="action_most_time_left">Most time left</string>
+    <string name="action_complete">Complete</string>
+    <string name="action_incomplete">Incomplete</string>
 </resources>

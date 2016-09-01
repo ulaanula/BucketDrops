@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_add"
+        android:icon="@drawable/ic_plus"
+        android:title="Add"
+        app:showAsAction="always"></item>
+    <item
+        android:id="@+id/action_show_incomplete"
+        android:title="@string/action_incomplete"></item>
+    <item
+        android:id="@+id/action_show_complete"
+        android:title="@string/action_complete"></item>
+    <item
+        android:id="@+id/action_sort_descending_date"
+        android:title="@string/action_most_time_left"></item>
+    <item
+        android:id="@+id/action_sort_ascending_date"
+        android:title="@string/action_least_time_left"></item>
+</menu>
