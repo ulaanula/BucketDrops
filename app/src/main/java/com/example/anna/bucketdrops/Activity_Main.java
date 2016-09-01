@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -11,6 +12,9 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.example.anna.bucketdrops.adapters.AdapterDrops;
+import com.example.anna.bucketdrops.adapters.AddListener;
+import com.example.anna.bucketdrops.adapters.Divider;
+import com.example.anna.bucketdrops.adapters.SimpleTouchCallback;
 import com.example.anna.bucketdrops.beans.Drop;
 import com.example.anna.bucketdrops.widgets.BucketRecyclerView;
 
@@ -28,6 +32,13 @@ public class Activity_Main extends AppCompatActivity {
     AdapterDrops mAdapter;
     View mEmptyView;
 
+    private AddListener mAddListener = new AddListener() {
+        @Override
+        public void add() {
+            showDialogAdd();
+        }
+    };
+
    private RealmChangeListener mChangedListener = new RealmChangeListener() {
        @Override
        public void onChange(Object element) {
@@ -35,7 +46,6 @@ public class Activity_Main extends AppCompatActivity {
            Log.d(AdapterDrops.TAG, "onChange: was called!");
        }
    };
-
 
     private View.OnClickListener mBtnAddListener = new View.OnClickListener(){
 
@@ -63,16 +73,19 @@ public class Activity_Main extends AppCompatActivity {
 
         mRecycler = (BucketRecyclerView)findViewById(R.id.rv_drops);
         mRecycler.setLayoutManager(manager);
-        mAdapter = new AdapterDrops(this, mResults);
+        mRecycler.addItemDecoration(new Divider(this, LinearLayoutManager.VERTICAL));
+        mAdapter = new AdapterDrops(this,mRealm, mResults, mAddListener);
+      //  mAdapter.setAddListener(mAddListener);
         mRecycler.hideIfEmpty(mToolbar);
         mRecycler.showIfEmpty(mEmptyView);
         mRecycler.setAdapter(mAdapter);
-
         mBtnAdd.setOnClickListener(mBtnAddListener);
         setSupportActionBar(mToolbar);
+        SimpleTouchCallback callback = new SimpleTouchCallback(mAdapter);
+        ItemTouchHelper helper = new ItemTouchHelper(callback);
+        helper.attachToRecyclerView(mRecycler);
         initBackgroundImage();
     }
-
 
     @Override
     protected void onStart() {
@@ -94,6 +107,4 @@ public class Activity_Main extends AppCompatActivity {
                 .into(background);
 
     }
-
-
 }
