@@ -1,5 +1,6 @@
 package com.example.anna.bucketdrops;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,6 +18,7 @@ import com.example.anna.bucketdrops.adapters.AdapterDrops;
 import com.example.anna.bucketdrops.adapters.AddListener;
 import com.example.anna.bucketdrops.adapters.CompleteListener;
 import com.example.anna.bucketdrops.adapters.Divider;
+import com.example.anna.bucketdrops.adapters.Filter;
 import com.example.anna.bucketdrops.adapters.MarkListener;
 import com.example.anna.bucketdrops.adapters.SimpleTouchCallback;
 import com.example.anna.bucketdrops.beans.Drop;
@@ -25,6 +27,7 @@ import com.example.anna.bucketdrops.widgets.BucketRecyclerView;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 public class Activity_Main extends AppCompatActivity {
 
@@ -92,7 +95,10 @@ public class Activity_Main extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity__main);
         mRealm = mRealm.getDefaultInstance();
-        mResults= mRealm.where(Drop.class).findAllAsync();
+
+        int filterOption = load();
+        loadResults(filterOption);
+
         mToolbar = (Toolbar)findViewById(R.id.toolbar);
         mBtnAdd = (Button)findViewById(R.id.btn_add);
         LinearLayoutManager manager = new LinearLayoutManager(this);
@@ -124,13 +130,77 @@ public class Activity_Main extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
+        boolean handled = true;
+        int filterOption = Filter.NONE;
 
-        if(id == R.id.action_add){
+        switch(id){
+            case R.id.action_add:
+                showDialogAdd();
+                break;
+            case R.id.action_show_complete:
+                save(Filter.COMPLETE);
+                filterOption = Filter.COMPLETE;
+                break;
+            case R.id.action_show_incomplete:
+                save(Filter.INCOMPLETE);
+                filterOption = Filter.INCOMPLETE;
+                break;
+            case R.id.action_sort_ascending_date:
+                save(Filter.LEAST_TIME_LEFT);
+                filterOption = Filter.LEAST_TIME_LEFT;
+                break;
+            case R.id.action_sort_descending_date:
+                save(Filter.MOST_TIME_LEFT);
+                filterOption = Filter.MOST_TIME_LEFT;
+                break;
+            default:
+                handled=false;
+                break;
+        }
+        loadResults(filterOption);
+        return handled;
+    }
+
+
+    private void loadResults(int filterOption){
+
+        switch(filterOption){
+            case Filter.NONE:
+                mResults =  mRealm.where(Drop.class).findAllAsync();
+                break;
+            case Filter.COMPLETE:
+                mResults = mRealm.where(Drop.class).equalTo("completed", true).findAllAsync();
+                break;
+            case Filter.INCOMPLETE:
+                mResults = mRealm.where(Drop.class).equalTo("completed", false).findAllAsync();
+                break;
+            case Filter.LEAST_TIME_LEFT:
+                mResults = mRealm.where(Drop.class).findAllSortedAsync("when");
+                break;
+            case Filter.MOST_TIME_LEFT:
+                mResults = mRealm.where(Drop.class).findAllSortedAsync("when",Sort.DESCENDING);
+                break;
 
         }
-
-        return super.onOptionsItemSelected(item);
+        mResults.addChangeListener(mChangedListener);
     }
+
+    //method for Shared Preferences; save
+    private void save(int filterOption){
+
+        SharedPreferences pref = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putInt("filter", filterOption);
+        editor.apply();
+    }
+    //method for Shared Preferences
+    private int load(){
+
+        SharedPreferences pref = getPreferences(MODE_PRIVATE);
+        int filterOption = pref.getInt("filter",Filter.NONE);
+        return filterOption;
+    }
+
 
     @Override
     protected void onStart() {

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -91,6 +92,7 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             Drop drop = mResults.get(position);
             DropHolder dropHolder = (DropHolder) holder;
             dropHolder.setWhat(drop.getWhat());
+            dropHolder.setWhen(drop.getWhen());
             dropHolder.setBackground(drop.isCompleted());
         }
     }
@@ -143,6 +145,11 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
             Util.setBackground(itemView,drawable);
 
+        }
+
+        public void setWhen(long when) {
+
+            mTextWhen.setText(DateUtils.getRelativeTimeSpanString(when, System.currentTimeMillis(),DateUtils.DAY_IN_MILLIS,DateUtils.FORMAT_ABBREV_ALL));
         }
     }
 
