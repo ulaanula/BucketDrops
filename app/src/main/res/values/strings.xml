@@ -7,4 +7,6 @@
     <string name="action_most_time_left">Most time left</string>
     <string name="action_complete">Complete</string>
     <string name="action_incomplete">Incomplete</string>
+    <string name="no_items_to_display">No Items to display</string>
+    <string name="action_none">None</string>
 </resources>

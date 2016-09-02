@@ -1,8 +1,8 @@
 package com.example.anna.bucketdrops;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -96,7 +96,7 @@ public class Activity_Main extends AppCompatActivity {
         setContentView(R.layout.activity__main);
         mRealm = mRealm.getDefaultInstance();
 
-        int filterOption = load();
+        int filterOption = AppBucketDrops.load(this);
         loadResults(filterOption);
 
         mToolbar = (Toolbar)findViewById(R.id.toolbar);
@@ -108,7 +108,9 @@ public class Activity_Main extends AppCompatActivity {
         mRecycler.setLayoutManager(manager);
         mRecycler.addItemDecoration(new Divider(this, LinearLayoutManager.VERTICAL));
         mAdapter = new AdapterDrops(this,mRealm, mResults, mAddListener, mMarkListener);
-      //  mAdapter.setAddListener(mAddListener);
+        mAdapter.setHasStableIds(true);
+        // here you can set any custom animator
+        mRecycler.setItemAnimator(new DefaultItemAnimator());
         mRecycler.hideIfEmpty(mToolbar);
         mRecycler.showIfEmpty(mEmptyView);
         mRecycler.setAdapter(mAdapter);
@@ -137,20 +139,24 @@ public class Activity_Main extends AppCompatActivity {
             case R.id.action_add:
                 showDialogAdd();
                 break;
+            case R.id.action_none:
+                AppBucketDrops.save(this,Filter.NONE);
+                filterOption = Filter.NONE;
+                break;
             case R.id.action_show_complete:
-                save(Filter.COMPLETE);
+                AppBucketDrops.save(this,Filter.COMPLETE);
                 filterOption = Filter.COMPLETE;
                 break;
             case R.id.action_show_incomplete:
-                save(Filter.INCOMPLETE);
+                AppBucketDrops.save(this,Filter.INCOMPLETE);
                 filterOption = Filter.INCOMPLETE;
                 break;
             case R.id.action_sort_ascending_date:
-                save(Filter.LEAST_TIME_LEFT);
+                AppBucketDrops.save(this,Filter.LEAST_TIME_LEFT);
                 filterOption = Filter.LEAST_TIME_LEFT;
                 break;
             case R.id.action_sort_descending_date:
-                save(Filter.MOST_TIME_LEFT);
+                AppBucketDrops.save(this,Filter.MOST_TIME_LEFT);
                 filterOption = Filter.MOST_TIME_LEFT;
                 break;
             default:
@@ -160,7 +166,6 @@ public class Activity_Main extends AppCompatActivity {
         loadResults(filterOption);
         return handled;
     }
-
 
     private void loadResults(int filterOption){
 
@@ -184,23 +189,6 @@ public class Activity_Main extends AppCompatActivity {
         }
         mResults.addChangeListener(mChangedListener);
     }
-
-    //method for Shared Preferences; save
-    private void save(int filterOption){
-
-        SharedPreferences pref = getPreferences(MODE_PRIVATE);
-        SharedPreferences.Editor editor = pref.edit();
-        editor.putInt("filter", filterOption);
-        editor.apply();
-    }
-    //method for Shared Preferences
-    private int load(){
-
-        SharedPreferences pref = getPreferences(MODE_PRIVATE);
-        int filterOption = pref.getInt("filter",Filter.NONE);
-        return filterOption;
-    }
-
 
     @Override
     protected void onStart() {
