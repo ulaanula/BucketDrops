@@ -58,7 +58,7 @@ public class BucketRecyclerView extends RecyclerView {
     private void toggleViews() {
 
         if(getAdapter()!=null && !mEmptyViews.isEmpty()&& !mNonEmptyViews.isEmpty()){
-            if(getAdapter().getItemCount()==0){ // adapter hat keine daten aus db drin
+            if(getAdapter().getItemCount() == 0){ // adapter hat keine daten aus db drin
 
                 //show all the views which are meant to be visible when there are no drops to display
                 Util.showViews(mEmptyViews);
@@ -68,9 +68,7 @@ public class BucketRecyclerView extends RecyclerView {
 
                 //hide all the views which are meant to be hidden e.g. toolbar
                 Util.hideViews(mNonEmptyViews);
-
-
-            }else{
+            } else {
                 //show all needed views  when drops are being displayed
                 Util.showViews(mNonEmptyViews);
 
@@ -79,12 +77,9 @@ public class BucketRecyclerView extends RecyclerView {
 
                 //hide all views which are meant to be displayed when no drops
                 Util.hideViews(mEmptyViews);
-
-
             }
         }
     }
-
     //This constructor initializes recyclerView from code
     public BucketRecyclerView(Context context) {
         super(context);
@@ -102,21 +97,17 @@ public class BucketRecyclerView extends RecyclerView {
     @Override
     public void setAdapter(Adapter adapter){
         super.setAdapter(adapter);
- 
         if(adapter!=null){
             adapter.registerAdapterDataObserver(mObserver);
         }
-
         mObserver.onChanged();
     }
 
     public void hideIfEmpty(View ... views) {
-
         mNonEmptyViews = Arrays.asList(views);
     }
 
     public void showIfEmpty(View ... emptyViews) {
-
         mEmptyViews = Arrays.asList(emptyViews);
     }
 }

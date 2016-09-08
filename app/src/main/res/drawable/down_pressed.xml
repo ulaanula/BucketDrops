@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item>
+
+        <shape>
+            <solid android:color="@android:color/transparent"></solid>
+            <size android:width="@dimen/custom_date_picker_element_width"></size>
+            <corners android:bottomLeftRadius="@dimen/bg_picker_item_corner_radius"
+                android:bottomRightRadius="@dimen/bg_picker_item_corner_radius"
+                ></corners>
+        </shape>
+
+    </item>
+
+    <item>
+        <bitmap android:src="@drawable/ic_down_pressed" android:gravity="center" />
+
+    </item>
+
+</layer-list>

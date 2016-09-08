@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center">
+
+    <TextView
+        android:id="@+id/tv_month"
+        android:text="JAN"
+        style="@style/DatePickerItemStyle"
+        />
+
+    <Space
+        android:layout_width="@dimen/bpv_space"
+        android:layout_height="match_parent" />
+
+    <TextView
+        android:id="@+id/tv_day"
+        style="@style/DatePickerItemStyle"
+        android:text="10"
+        />
+
+    <Space
+        android:layout_width="@dimen/bpv_space"
+        android:layout_height="match_parent" />
+
+    <TextView
+        android:id="@+id/tv_year"
+        android:text="2016"
+        style="@style/DatePickerItemStyle"
+        />
+
+</LinearLayout>

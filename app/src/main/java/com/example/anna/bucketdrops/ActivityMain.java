@@ -20,6 +20,7 @@ import com.example.anna.bucketdrops.adapters.CompleteListener;
 import com.example.anna.bucketdrops.adapters.Divider;
 import com.example.anna.bucketdrops.adapters.Filter;
 import com.example.anna.bucketdrops.adapters.MarkListener;
+import com.example.anna.bucketdrops.adapters.ResetListener;
 import com.example.anna.bucketdrops.adapters.SimpleTouchCallback;
 import com.example.anna.bucketdrops.beans.Drop;
 import com.example.anna.bucketdrops.widgets.BucketRecyclerView;
@@ -29,15 +30,16 @@ import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
-public class Activity_Main extends AppCompatActivity {
+public class ActivityMain extends AppCompatActivity {
 
     Toolbar mToolbar;
     Button mBtnAdd;
     BucketRecyclerView mRecycler;
     Realm mRealm;
     RealmResults<Drop> mResults;
-    AdapterDrops mAdapter;
     View mEmptyView;
+    AdapterDrops mAdapter;
+
 
     private RealmChangeListener mChangedListener = new RealmChangeListener() {
         @Override
@@ -90,32 +92,46 @@ public class Activity_Main extends AppCompatActivity {
         }
     };
 
+    private ResetListener mResetListener = new ResetListener() {
+        @Override
+        public void onReset() {
+            AppBucketDrops.save(ActivityMain.this, Filter.NONE);
+            loadResults(Filter.NONE);
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
         setContentView(R.layout.activity__main);
         mRealm = mRealm.getDefaultInstance();
+        mToolbar = (Toolbar)findViewById(R.id.toolbar);
+
+        setSupportActionBar(mToolbar);
+        mBtnAdd = (Button)findViewById(R.id.btn_add);
+        AppBucketDrops.setRalewayRegular(this,mBtnAdd);
+
+        mBtnAdd.setOnClickListener(mBtnAddListener);
 
         int filterOption = AppBucketDrops.load(this);
         loadResults(filterOption);
-
-        mToolbar = (Toolbar)findViewById(R.id.toolbar);
-        mBtnAdd = (Button)findViewById(R.id.btn_add);
-        LinearLayoutManager manager = new LinearLayoutManager(this);
         mEmptyView = findViewById(R.id.empty_drops);
 
+        LinearLayoutManager manager = new LinearLayoutManager(this);
         mRecycler = (BucketRecyclerView)findViewById(R.id.rv_drops);
         mRecycler.setLayoutManager(manager);
         mRecycler.addItemDecoration(new Divider(this, LinearLayoutManager.VERTICAL));
-        mAdapter = new AdapterDrops(this,mRealm, mResults, mAddListener, mMarkListener);
-        mAdapter.setHasStableIds(true);
         // here you can set any custom animator
         mRecycler.setItemAnimator(new DefaultItemAnimator());
         mRecycler.hideIfEmpty(mToolbar);
         mRecycler.showIfEmpty(mEmptyView);
+
+        mAdapter = new AdapterDrops(this,mRealm, mResults, mAddListener, mMarkListener, mResetListener);
+        mAdapter.setHasStableIds(true);
         mRecycler.setAdapter(mAdapter);
-        mBtnAdd.setOnClickListener(mBtnAddListener);
-        setSupportActionBar(mToolbar);
+
         SimpleTouchCallback callback = new SimpleTouchCallback(mAdapter);
         ItemTouchHelper helper = new ItemTouchHelper(callback);
         helper.attachToRecyclerView(mRecycler);
@@ -131,6 +147,7 @@ public class Activity_Main extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
+
         int id = item.getItemId();
         boolean handled = true;
         int filterOption = Filter.NONE;
@@ -140,23 +157,18 @@ public class Activity_Main extends AppCompatActivity {
                 showDialogAdd();
                 break;
             case R.id.action_none:
-                AppBucketDrops.save(this,Filter.NONE);
                 filterOption = Filter.NONE;
                 break;
             case R.id.action_show_complete:
-                AppBucketDrops.save(this,Filter.COMPLETE);
                 filterOption = Filter.COMPLETE;
                 break;
             case R.id.action_show_incomplete:
-                AppBucketDrops.save(this,Filter.INCOMPLETE);
                 filterOption = Filter.INCOMPLETE;
                 break;
             case R.id.action_sort_ascending_date:
-                AppBucketDrops.save(this,Filter.LEAST_TIME_LEFT);
                 filterOption = Filter.LEAST_TIME_LEFT;
                 break;
             case R.id.action_sort_descending_date:
-                AppBucketDrops.save(this,Filter.MOST_TIME_LEFT);
                 filterOption = Filter.MOST_TIME_LEFT;
                 break;
             default:
@@ -164,6 +176,7 @@ public class Activity_Main extends AppCompatActivity {
                 break;
         }
         loadResults(filterOption);
+        AppBucketDrops.save(this,filterOption);
         return handled;
     }
 
@@ -208,6 +221,5 @@ public class Activity_Main extends AppCompatActivity {
                 .load(R.drawable.background)
                 .centerCrop()
                 .into(background);
-
     }
 }

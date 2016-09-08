@@ -60,9 +60,9 @@ public class SimpleTouchCallback extends ItemTouchHelper.Callback {
 
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-
+            //getAdapterPosition
         if(viewHolder instanceof AdapterDrops.DropHolder){
-            mSwipeListener.onSwipe(viewHolder.getAdapterPosition());
+            mSwipeListener.onSwipe(viewHolder.getLayoutPosition());
         }
 
     }

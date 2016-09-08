@@ -8,13 +8,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.example.anna.bucketdrops.beans.Drop;
-
-import java.util.Calendar;
+import com.example.anna.bucketdrops.widgets.BucketPickerView;
 
 import io.realm.Realm;
 
@@ -24,11 +23,17 @@ import io.realm.Realm;
 public class DialogAdd extends DialogFragment {
 
     private Button mBtnAddIt;
-    private DatePicker mInputWhen;
+    private BucketPickerView mInputWhen;
     private EditText mInputWhat;
     private ImageButton mBtnClose;
 
     public DialogAdd(){
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setStyle(DialogFragment.STYLE_NORMAL,R.style.DialogTheme);
     }
 
     private View.OnClickListener mBtnClickListener =  new View.OnClickListener(){
@@ -51,17 +56,8 @@ public class DialogAdd extends DialogFragment {
     private void addAction() {
 
         String what = mInputWhat.getText().toString();
-        String date = mInputWhen.getDayOfMonth()+"/"+mInputWhen.getMonth()+"/"+mInputWhen.getYear();
         long now = System.currentTimeMillis();
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.DAY_OF_MONTH, mInputWhen.getDayOfMonth());
-        calendar.set(Calendar.MONTH, mInputWhen.getMonth());
-        calendar.set(Calendar.YEAR, mInputWhen.getYear());
-        calendar.set(Calendar.HOUR,0);
-        calendar.set(Calendar.MINUTE,0);
-        calendar.set(Calendar.SECOND,0);
-
-        Drop drop = new Drop(what, now,calendar.getTimeInMillis() ,false);
+        Drop drop = new Drop(what, now,mInputWhen.getTime() ,false);
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         realm.copyToRealm(drop);
@@ -80,9 +76,19 @@ public class DialogAdd extends DialogFragment {
         super.onViewCreated(view, savedInstanceState);
 
         mBtnAddIt = (Button)view.findViewById(R.id.btn_add_it);
-        mInputWhen = (DatePicker)view.findViewById(R.id.bpv_date);
+        mInputWhen = (BucketPickerView) view.findViewById(R.id.bpv_date);
         mInputWhat = (EditText)view.findViewById(R.id.et_drop);
         mBtnClose = (ImageButton)view.findViewById(R.id.btn_close);
+
+        AppBucketDrops.setRalewayRegular(view.getContext(),mBtnAddIt);
+        AppBucketDrops.setRalewayRegular(view.getContext(),mInputWhat);
+        TextView tv_day = (TextView) mInputWhen.findViewById(R.id.tv_day);
+        TextView tv_month = (TextView) mInputWhen.findViewById(R.id.tv_month);
+        TextView tv_year = (TextView) mInputWhen.findViewById(R.id.tv_year);
+        AppBucketDrops.setRalewayRegular(view.getContext(),tv_year);
+
+        AppBucketDrops.setRalewayRegular(view.getContext(),tv_day);
+        AppBucketDrops.setRalewayRegular(view.getContext(),tv_month);
 
         mBtnClose.setOnClickListener(mBtnClickListener);
         mBtnAddIt.setOnClickListener(mBtnClickListener);

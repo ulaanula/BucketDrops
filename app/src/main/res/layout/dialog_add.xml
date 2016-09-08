@@ -1,51 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
-    android:background="@color/bg_dialog">
+    android:layout_width="match_parent"
+    android:background="@color/bg_dialog"
+    >
 
-    <TextView
-        android:id="@+id/tv_title"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/str_add_drop"
-        android:layout_marginTop = "@dimen/tv_title_vertical_margin"
-        android:layout_marginBottom="@dimen/tv_title_fontsize"
-        android:textSize="18sp"
-        >
-    </TextView>
-    <ImageButton
-        android:id = "@+id/btn_close"
-        android:layout_width="12dp"
-        android:layout_height="12dp"
-        android:src="@drawable/ic_close"
-        android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/tv_title"
-        android:layout_alignBottom="@+id/tv_title"
-        android:background="@null"
-        ></ImageButton>
+        android:layout_height="match_parent"
+        android:padding="24dp"
+       >
 
-    <EditText
-        android:id ="@+id/et_drop"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/btn_close"
-        android:hint="@string/hint_et_drop"
-        android:padding="16dp"
-        android:inputType="textVisiblePassword"/>
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/str_add_drop"
+            android:layout_marginTop = "@dimen/tv_title_vertical_margin"
+            android:layout_marginBottom="@dimen/tv_title_vertical_margin"
+            android:textSize="@dimen/tv_title_fontsize"
+            >
+        </TextView>
+        <ImageButton
+            android:id = "@+id/btn_close"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:src="@drawable/ic_close"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/tv_title"
+            android:layout_alignBottom="@+id/tv_title"
+            android:background="@null"
+            ></ImageButton>
 
-    <DatePicker
-        android:id="@+id/bpv_date"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/et_drop"></DatePicker>
+        <EditText
+            android:id ="@+id/et_drop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_title"
+            android:hint="@string/hint_et_drop"
+            android:padding="16dp"
+            android:background="@drawable/bg_et_drop"
+            android:inputType="textVisiblePassword"/>
 
-    <Button
-        android:id="@+id/btn_add_it"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/bpv_date"
-        android:text="@string/str_add_it"
-        android:textAllCaps="false"/>
+        <com.example.anna.bucketdrops.widgets.BucketPickerView
+            android:id="@+id/bpv_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/et_drop"
+            android:layout_marginBottom="64dp"
+            android:layout_marginTop="64dp">
 
-</RelativeLayout>
+        </com.example.anna.bucketdrops.widgets.BucketPickerView>
+
+        <Button
+            android:id="@+id/btn_add_it"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/bpv_date"
+            android:text="@string/str_add_it"
+            android:textAllCaps="false"
+            android:textSize="28sp"
+            android:background="@drawable/bg_btn_add_it"/>
+
+    </RelativeLayout>
+
+
+
+
+
+
+
+
+
+</ScrollView>
+

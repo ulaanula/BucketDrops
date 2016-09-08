@@ -3,7 +3,7 @@
     android:id ="@+id/tv_no_items"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:text = "@string/no_items_to_display"
+    android:text = "@string/str_no_items"
     android:gravity ="center"
     android:background="@drawable/bg_row_drop"
     android:paddingTop="@dimen/tv_no_items_vertical_padding"

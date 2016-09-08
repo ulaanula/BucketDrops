@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="22dp"
+    android:padding="@dimen/row_drop_padding"
     android:background="@drawable/bg_row_drop"
     >
 
