@@ -1,5 +1,8 @@
 package com.example.anna.bucketdrops;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -23,6 +26,8 @@ import com.example.anna.bucketdrops.adapters.MarkListener;
 import com.example.anna.bucketdrops.adapters.ResetListener;
 import com.example.anna.bucketdrops.adapters.SimpleTouchCallback;
 import com.example.anna.bucketdrops.beans.Drop;
+import com.example.anna.bucketdrops.extras.Util;
+import com.example.anna.bucketdrops.services.NotificationService;
 import com.example.anna.bucketdrops.widgets.BucketRecyclerView;
 
 import io.realm.Realm;
@@ -136,6 +141,11 @@ public class ActivityMain extends AppCompatActivity {
         ItemTouchHelper helper = new ItemTouchHelper(callback);
         helper.attachToRecyclerView(mRecycler);
         initBackgroundImage();
+        AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+        Intent intent = new Intent(this, NotificationService.class);
+        PendingIntent pendingIntent = PendingIntent.getService(this,100,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+        alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,1000,5000,pendingIntent );
+        Util.scheduleAlarm(this);
     }
 
     @Override

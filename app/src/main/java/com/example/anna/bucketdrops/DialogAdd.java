@@ -23,6 +23,7 @@ import io.realm.Realm;
 public class DialogAdd extends DialogFragment {
 
     private Button mBtnAddIt;
+    private TextView mAddADropTitle;
     private BucketPickerView mInputWhen;
     private EditText mInputWhat;
     private ImageButton mBtnClose;
@@ -79,7 +80,8 @@ public class DialogAdd extends DialogFragment {
         mInputWhen = (BucketPickerView) view.findViewById(R.id.bpv_date);
         mInputWhat = (EditText)view.findViewById(R.id.et_drop);
         mBtnClose = (ImageButton)view.findViewById(R.id.btn_close);
-
+        mAddADropTitle = (TextView)view.findViewById(R.id.tv_title);
+        AppBucketDrops.setRalewayRegular(view.getContext(),mAddADropTitle);
         AppBucketDrops.setRalewayRegular(view.getContext(),mBtnAddIt);
         AppBucketDrops.setRalewayRegular(view.getContext(),mInputWhat);
         TextView tv_day = (TextView) mInputWhen.findViewById(R.id.tv_day);
