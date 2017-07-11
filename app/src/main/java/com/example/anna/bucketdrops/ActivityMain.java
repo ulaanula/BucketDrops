@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.anna.bucketdrops.adapters.AdapterDrops;
@@ -29,6 +30,8 @@ import com.example.anna.bucketdrops.beans.Drop;
 import com.example.anna.bucketdrops.extras.Util;
 import com.example.anna.bucketdrops.services.NotificationService;
 import com.example.anna.bucketdrops.widgets.BucketRecyclerView;
+
+import java.lang.reflect.Field;
 
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
@@ -109,12 +112,22 @@ public class ActivityMain extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
         setContentView(R.layout.activity__main);
         mRealm = mRealm.getDefaultInstance();
         mToolbar = (Toolbar)findViewById(R.id.toolbar);
-
         setSupportActionBar(mToolbar);
+
+        TextView yourTextView = null;
+        try {
+            Field f = mToolbar.getClass().getDeclaredField("mTitleTextView");
+            f.setAccessible(true);
+            yourTextView = (TextView) f.get(mToolbar);
+            AppBucketDrops.setRalewayRegular(this,yourTextView);
+
+        } catch (NoSuchFieldException e) {
+        } catch (IllegalAccessException e) {
+        }
+
         mBtnAdd = (Button)findViewById(R.id.btn_add);
         AppBucketDrops.setRalewayRegular(this,mBtnAdd);
 
@@ -156,7 +169,6 @@ public class ActivityMain extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
 
         int id = item.getItemId();
         boolean handled = true;
